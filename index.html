@@ -1,12 +1,9 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <link rel="manifest" href="manifest.json">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Öğrenci Seçici - Kart Çevirme Efektli</title>
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#ffffff">
   <!-- Excel Okuma Kütüphanesi -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <!-- Konfeti Efekti Kütüphanesi -->
@@ -29,56 +26,44 @@
       position: relative;
     }
 
-    /* SOL ÜST BUTONLAR GRUBU */
-    .top-left-buttons {
+    /* ÜST BUTONLAR GENEL KONTEYNERİ (Çakışmayı önlemek için düzenlendi) */
+    .top-buttons-container {
       position: fixed;
-      top: 20px;
-      left: 20px;
+      top: max(15px, env(safe-area-inset-top));
+      left: 10px;
+      right: 10px;
       display: flex;
-      gap: 10px;
-      z-index: 100;
-    }
-    .top-btn {
-      background-color: #ffffff;
-      color: #333;
-      border: 1px solid #ccc;
-      border-radius: 30px;
-      padding: 10px 16px;
-      font-size: 14px;
-      font-weight: bold;
-      cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      display: flex;
+      justify-content: space-between;
       align-items: center;
-      gap: 6px;
-      transition: all 0.2s ease;
-    }
-    .top-btn:hover {
-      background-color: #e9ecef;
-      transform: scale(1.05);
+      z-index: 100;
+      pointer-events: none; /* Boşlukların tıklanmasını engellemesin */
     }
 
-    /* TAM EKRAN BUTONU */
-    .fullscreen-btn {
-      position: fixed;
-      top: 20px;
-      right: 20px;
+    .top-left-buttons {
+      display: flex;
+      gap: 6px;
+      pointer-events: auto;
+    }
+
+    .top-btn, .fullscreen-btn {
       background-color: #ffffff;
       color: #333;
       border: 1px solid #ccc;
       border-radius: 30px;
-      padding: 10px 18px;
-      font-size: 14px;
+      padding: 8px 12px;
+      font-size: 13px;
       font-weight: bold;
       cursor: pointer;
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      z-index: 100;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 4px;
       transition: all 0.2s ease;
+      pointer-events: auto;
+      white-space: nowrap;
     }
-    .fullscreen-btn:hover {
+
+    .top-btn:hover, .fullscreen-btn:hover {
       background-color: #e9ecef;
       transform: scale(1.05);
     }
@@ -555,27 +540,33 @@
       .upload-options {
         grid-template-columns: 1fr;
       }
+      /* Çok küçük ekranlarda buton yazı boyutları ve boşlukları optimize edildi */
+      .top-btn, .fullscreen-btn {
+        padding: 6px 8px;
+        font-size: 11px;
+      }
     }
   </style>
 </head>
 <body>
 
-  <!-- SOL ÜST İKİ AYRI BUTON -->
-  <div class="top-left-buttons">
-    <button class="top-btn" onclick="openStudentListModal()">
-      <span>👥</span>
-      <span>Öğrenci Listesi</span>
-    </button>
-    <button class="top-btn" onclick="openStudentScoreModal()">
-      <span>⭐</span>
-      <span>Öğrenci Puanları</span>
+  <!-- ÜST BUTONLAR KONTEYNERİ (Sol ve Sağ butonları otomatik düzenler) -->
+  <div class="top-buttons-container">
+    <div class="top-left-buttons">
+      <button class="top-btn" onclick="openStudentListModal()">
+        <span>👥</span>
+        <span>Liste</span>
+      </button>
+      <button class="top-btn" onclick="openStudentScoreModal()">
+        <span>⭐</span>
+        <span>Puanlar</span>
+      </button>
+    </div>
+    <button class="fullscreen-btn" id="fullscreenBtn" onclick="toggleFullscreen()">
+      <span id="fullscreenIcon">⛶</span>
+      <span id="fullscreenText">Tam Ekran</span>
     </button>
   </div>
-
-  <button class="fullscreen-btn" id="fullscreenBtn" onclick="toggleFullscreen()">
-    <span id="fullscreenIcon">⛶</span>
-    <span id="fullscreenText">Tam Ekran</span>
-  </button>
 
   <div class="main-screen">
     <div class="card-container">
@@ -632,7 +623,7 @@
         <h4>Ses ve Efekt Ayarları</h4>
         <label class="toggle-option">
           <input type="checkbox" id="soundToggle" checked>
-          <span>Alkış and Kutlama Müzik Efektini Çal</span>
+          <span>Alkış ve Kutlama Müzik Efektini Çal</span>
         </label>
       </div>
 
