@@ -573,7 +573,7 @@
       font-weight: bold;
       color: #2c3e50;
       text-align: center;
-      margin: 20px 0;
+      margin: 15px 0;
       font-family: monospace;
       background: #f8f9fa;
       padding: 15px;
@@ -582,23 +582,55 @@
     }
     .timer-presets {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
-      margin-bottom: 15px;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 6px;
+      margin-bottom: 10px;
     }
     .btn-preset {
       background-color: #e9ecef;
       color: #495057;
       border: none;
-      padding: 10px;
+      padding: 8px 4px;
       border-radius: 8px;
       font-weight: bold;
       cursor: pointer;
-      font-size: 14px;
+      font-size: 13px;
       transition: background-color 0.2s;
     }
     .btn-preset:hover {
       background-color: #ced4da;
+    }
+    .timer-custom-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 15px;
+      align-items: center;
+      justify-content: center;
+      background: #f8f9fa;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #dee2e6;
+    }
+    .timer-custom-row input {
+      width: 80px;
+      padding: 6px 10px;
+      font-size: 15px;
+      border: 1px solid #ced4da;
+      border-radius: 6px;
+      text-align: center;
+    }
+    .btn-timer-set {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 7px 14px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 13px;
+    }
+    .btn-timer-set:hover {
+      background-color: #0056b3;
     }
     .timer-controls {
       display: flex;
@@ -778,7 +810,7 @@
         font-size: 16px;
       }
       .timer-presets {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(3, 1fr);
       }
       .groups-config-panel {
         grid-template-columns: 1fr;
@@ -954,7 +986,14 @@
           <button class="btn-preset" onclick="setTimerPreset(30)">30 Sn</button>
           <button class="btn-preset" onclick="setTimerPreset(60)">1 Dakika</button>
           <button class="btn-preset" onclick="setTimerPreset(120)">2 Dakika</button>
+          <button class="btn-preset" onclick="setTimerPreset(180)">3 Dakika</button>
           <button class="btn-preset" onclick="setTimerPreset(300)">5 Dakika</button>
+        </div>
+
+        <div class="timer-custom-row">
+          <span style="font-size: 13px; font-weight: bold; color: #495057;">Özel Dakika:</span>
+          <input type="number" id="customMinuteInput" min="1" max="60" value="1">
+          <button class="btn-timer-set" onclick="setCustomTimer()">Ayarla</button>
         </div>
 
         <div class="timer-display" id="timerDisplay">01:00</div>
@@ -1225,10 +1264,8 @@
         [pool[i], pool[j]] = [pool[j], pool[i]];
       }
     } else if (distributionType === 'balanced') {
-      // Puanlarına göre büyükten küçüğe sırala (yılan mantığı için)
       pool.sort((a, b) => ((b.smileCount || 0) - (b.sadCount || 0)) - ((a.smileCount || 0) - (a.sadCount || 0)));
     } else if (distributionType === 'gender') {
-      // Cinsiyete göre ayır ve karıştır
       let boys = pool.filter(s => s.gender === 'E');
       let girls = pool.filter(s => s.gender === 'K');
       boys.sort(() => Math.random() - 0.5);
@@ -1263,7 +1300,6 @@
     }
 
     activeGroupsState = groups.map((group, idx) => {
-      // Mevcut grup adı korunabilir ya da rastgele atanabilir
       const existingTeam = activeGroupsState[idx];
       return {
         name: existingTeam ? existingTeam.name : (funTeamNames[idx % funTeamNames.length] + (idx >= funTeamNames.length ? ` ${idx+1}` : '')),
@@ -1338,6 +1374,16 @@
     initialTimerSeconds = seconds;
     totalSecondsLeft = seconds;
     updateTimerDisplay();
+  }
+
+  function setCustomTimer() {
+    const minInput = document.getElementById('customMinuteInput');
+    let minutes = parseInt(minInput.value);
+    if (isNaN(minutes) || minutes < 1) minutes = 1;
+    if (minutes > 60) minutes = 60;
+    minInput.value = minutes;
+    
+    setTimerPreset(minutes * 60);
   }
 
   function updateTimerDisplay() {
