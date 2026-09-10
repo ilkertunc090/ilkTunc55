@@ -243,6 +243,31 @@
       z-index: 20;
     }
 
+    /* SOL ALT KÖŞE GRUPLAR BUTONU */
+    .groups-trigger {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background-color: #6f42c1;
+      color: white;
+      border: none;
+      border-radius: 30px;
+      padding: 12px 20px;
+      font-size: 15px;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: bold;
+      transition: all 0.2s ease;
+    }
+    .groups-trigger:hover {
+      background-color: #5a3298;
+      transform: scale(1.05);
+    }
+
     .settings-modal {
       display: none;
       position: fixed;
@@ -597,6 +622,142 @@
     .btn-timer-reset { background-color: #6c757d; }
     .btn-timer-reset:hover { background-color: #5a6268; }
 
+    /* GRUPLAR MODALI İÇİN GELİŞTİRİLMİŞ STİLLER */
+    .groups-config-panel {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    .groups-config-control {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .groups-config-control label {
+      font-size: 13px;
+      font-weight: bold;
+      color: #495057;
+    }
+    .groups-config-panel select, .groups-config-panel input {
+      padding: 8px 12px;
+      border: 1px solid #ced4da;
+      border-radius: 6px;
+      font-size: 14px;
+      background: #fff;
+    }
+    .groups-action-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    .btn-generate-groups {
+      flex: 2;
+      background-color: #6f42c1;
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 14px;
+      transition: background-color 0.2s;
+    }
+    .btn-generate-groups:hover {
+      background-color: #5a3298;
+    }
+    .btn-group-reset-scores {
+      flex: 1;
+      background-color: #ffc107;
+      color: #212529;
+      border: none;
+      padding: 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 13px;
+    }
+    .btn-group-reset-scores:hover {
+      background-color: #e0a800;
+    }
+
+    .groups-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 15px;
+      margin-top: 10px;
+    }
+    .group-card {
+      background: #f8f9fa;
+      border: 1px solid #dee2e6;
+      border-radius: 8px;
+      padding: 12px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .group-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #6f42c1;
+      padding-bottom: 6px;
+      margin-bottom: 8px;
+    }
+    .group-name-input {
+      font-size: 14px;
+      font-weight: bold;
+      color: #6f42c1;
+      border: 1px solid transparent;
+      background: transparent;
+      padding: 2px 4px;
+      border-radius: 4px;
+      width: 110px;
+    }
+    .group-name-input:focus {
+      border-color: #6f42c1;
+      background: #fff;
+      outline: none;
+    }
+    .group-score-badge {
+      background: #6f42c1;
+      color: white;
+      font-size: 12px;
+      font-weight: bold;
+      padding: 2px 8px;
+      border-radius: 12px;
+    }
+    .group-member-item {
+      font-size: 13px;
+      padding: 4px 0;
+      border-bottom: 1px dashed #eee;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .group-score-controls {
+      display: flex;
+      gap: 5px;
+      margin-top: 10px;
+      padding-top: 8px;
+      border-top: 1px solid #eee;
+    }
+    .btn-group-score {
+      flex: 1;
+      padding: 4px;
+      font-size: 11px;
+      font-weight: bold;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      color: white;
+    }
+    .btn-gplus { background-color: #28a745; }
+    .btn-gminus { background-color: #dc3545; }
+    .btn-gplus:hover, .btn-gminus:hover { opacity: 0.85; }
+
     @media (max-width: 480px) {
       .card-container {
         width: 260px;
@@ -618,6 +779,9 @@
       }
       .timer-presets {
         grid-template-columns: repeat(2, 1fr);
+      }
+      .groups-config-panel {
+        grid-template-columns: 1fr;
       }
     }
   </style>
@@ -672,6 +836,12 @@
       <button class="btn-reset" onclick="resetList()">Sıfırla</button>
     </div>
   </div>
+
+  <!-- SOL ALT KÖŞE GRUPLAR BUTONU -->
+  <button class="groups-trigger" onclick="openGroupsModal()">
+    <span>🧩</span>
+    <span>Gruplar</span>
+  </button>
 
   <button class="settings-trigger" onclick="openSettings()">⚙️ Öğrenci Yönetimi</button>
 
@@ -797,6 +967,44 @@
     </div>
   </div>
 
+  <!-- GRUPLAR MODALI (GELİŞTİRİLMİŞ) -->
+  <div class="settings-modal" id="groupsModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Gelişmiş Öğrenci Grupları Oluşturucu</h3>
+        <button class="btn-main-screen" onclick="closeGroupsModal()">Ana Ekran</button>
+      </div>
+      <div class="modal-body-content">
+        <div class="groups-config-panel">
+          <div class="groups-config-control">
+            <label for="groupDistributionType">Dağılım Kriteri:</label>
+            <select id="groupDistributionType">
+              <option value="random">Rastgele Dağılım</option>
+              <option value="balanced">Puan / Performansa Göre Dengeli</option>
+              <option value="gender">Kız / Erkek Dengeli Dağılım</option>
+            </select>
+          </div>
+          <div class="groups-config-control">
+            <label for="groupCountInput">Grup Sayısı:</label>
+            <input type="number" id="groupCountInput" min="2" max="20" value="4">
+          </div>
+        </div>
+
+        <div class="groups-action-row">
+          <button class="btn-generate-groups" onclick="generateGroups()">Grup Oluştur / Karıştır</button>
+          <button class="btn-group-reset-scores" onclick="resetGroupScores()">Puanları Sıfırla</button>
+        </div>
+
+        <div style="margin-bottom: 10px; font-size: 13px; color: #666;">
+          Oluşan grupların isimlerini düzenleyebilir, etkinlik boyunca takımlara puan ekleyip çıkarabilirsiniz:
+        </div>
+        <div id="groupsContainer" class="groups-grid">
+          Henüz grup oluşturulmadı.
+        </div>
+      </div>
+    </div>
+  </div>
+
   <input type="file" id="editImageInput" accept="image/*" style="display:none;" onchange="handleEditImageSelect(event)">
 
 <script>
@@ -806,6 +1014,7 @@
   let currentlyEditingStudentId = null;
   let isSelecting = false;
   let currentSelectedStudentId = null;
+  let activeGroupsState = [];
 
   // Sayaç Değişkenleri
   let timerInterval = null;
@@ -815,6 +1024,12 @@
 
   const defaultBoyAvatar = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><circle cx='100' cy='100' r='100' fill='%23e3f2fd'/><circle cx='100' cy='85' r='45' fill='%23ffccbc'/><path d='M55 75 Q100 20 145 75 Q130 45 100 45 Q70 45 55 75 Z' fill='%235d4037'/><circle cx='85' cy='80' r='5' fill='%23333'/><circle cx='115' cy='80' r='5' fill='%23333'/><path d='M90 100 Q100 110 110 100' stroke='%23333' stroke-width='3' fill='none' stroke-linecap='round'/><path d='M40 160 Q100 110 160 160 Z' fill='%232196f3'/></svg>";
   const defaultGirlAvatar = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><circle cx='100' cy='100' r='100' fill='%23fce4ec'/><circle cx='100' cy='85' r='45' fill='%23ffccbc'/><path d='M55 75 Q100 20 145 75 Q130 50 100 50 Q70 50 55 75 Z' fill='%23ad1457'/><path d='M55 75 Q40 120 65 150 Q50 110 55 75 Z' fill='%23ad1457'/><path d='M145 75 Q160 120 135 150 Q150 110 145 75 Z' fill='%23ad1457'/><circle cx='85' cy='80' r='5' fill='%23333'/><circle cx='115' cy='80' r='5' fill='%23333'/><path d='M90 100 Q100 110 110 100' stroke='%23333' stroke-width='3' fill='none' stroke-linecap='round'/><path d='M40 160 Q100 110 160 160 Z' fill='%23e91e63'/></svg>";
+
+  const funTeamNames = [
+    "Yıldızlar", "Şimşekler", "Bilginler", "Kartallar", "Fırtına", 
+    "Dehalar", "Atılımcılar", "Gezginler", "Piyonlar", "Vezirler", 
+    "Alfa Takımı", "Zeka Küpleri", "Meşaleler", "Hedef 100", "Zirvedekiler"
+  ];
 
   function toggleFullscreen() {
     const iconElem = document.getElementById('fullscreenIcon');
@@ -980,6 +1195,141 @@
   }
   function closeTimerModal() {
     document.getElementById('timerModal').style.display = 'none';
+  }
+
+  function openGroupsModal() {
+    document.getElementById('groupsModal').style.display = 'flex';
+    if (activeGroupsState.length > 0) {
+      renderGroupsUI();
+    }
+  }
+  function closeGroupsModal() {
+    document.getElementById('groupsModal').style.display = 'none';
+  }
+
+  // Geliştirilmiş Gruplar Fonksiyonu
+  function generateGroups() {
+    if (students.length === 0) {
+      alert("Önce öğrenci eklemelisiniz!");
+      return;
+    }
+    const groupCountInput = parseInt(document.getElementById('groupCountInput').value) || 4;
+    const groupCount = Math.max(1, Math.min(groupCountInput, students.length));
+    const distributionType = document.getElementById('groupDistributionType').value;
+
+    let pool = [...students];
+
+    if (distributionType === 'random') {
+      for (let i = pool.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [pool[i], pool[j]] = [pool[j], pool[i]];
+      }
+    } else if (distributionType === 'balanced') {
+      // Puanlarına göre büyükten küçüğe sırala (yılan mantığı için)
+      pool.sort((a, b) => ((b.smileCount || 0) - (b.sadCount || 0)) - ((a.smileCount || 0) - (a.sadCount || 0)));
+    } else if (distributionType === 'gender') {
+      // Cinsiyete göre ayır ve karıştır
+      let boys = pool.filter(s => s.gender === 'E');
+      let girls = pool.filter(s => s.gender === 'K');
+      boys.sort(() => Math.random() - 0.5);
+      girls.sort(() => Math.random() - 0.5);
+      pool = [];
+      let maxLen = Math.max(boys.length, girls.length);
+      for (let i = 0; i < maxLen; i++) {
+        if (boys[i]) pool.push(boys[i]);
+        if (girls[i]) pool.push(girls[i]);
+      }
+    }
+
+    let groups = Array.from({ length: groupCount }, () => []);
+
+    if (distributionType === 'balanced') {
+      let index = 0;
+      let forward = true;
+      pool.forEach(student => {
+        groups[index].push(student);
+        if (forward) {
+          index++;
+          if (index >= groupCount) { index = groupCount - 1; forward = false; }
+        } else {
+          index--;
+          if (index < 0) { index = 0; forward = true; }
+        }
+      });
+    } else {
+      pool.forEach((student, index) => {
+        groups[index % groupCount].push(student);
+      });
+    }
+
+    activeGroupsState = groups.map((group, idx) => {
+      // Mevcut grup adı korunabilir ya da rastgele atanabilir
+      const existingTeam = activeGroupsState[idx];
+      return {
+        name: existingTeam ? existingTeam.name : (funTeamNames[idx % funTeamNames.length] + (idx >= funTeamNames.length ? ` ${idx+1}` : '')),
+        score: existingTeam ? existingTeam.score : 0,
+        members: group
+      };
+    });
+
+    renderGroupsUI();
+  }
+
+  function renderGroupsUI() {
+    const container = document.getElementById('groupsContainer');
+    container.innerHTML = '';
+
+    if (activeGroupsState.length === 0) {
+      container.innerHTML = 'Henüz grup oluşturulmadı.';
+      return;
+    }
+
+    activeGroupsState.forEach((group, idx) => {
+      const card = document.createElement('div');
+      card.className = 'group-card';
+      
+      let membersHtml = '';
+      group.members.forEach(m => {
+        const genderIcon = m.gender === 'K' ? '👧' : '👦';
+        membersHtml += `<div class="group-member-item"><span>${m.name}</span> <span>${genderIcon}</span></div>`;
+      });
+
+      card.innerHTML = `
+        <div>
+          <div class="group-card-header">
+            <input type="text" class="group-name-input" value="${group.name}" onchange="updateGroupName(${idx}, this.value)">
+            <span class="group-score-badge">${group.score} Puan</span>
+          </div>
+          <div>${membersHtml}</div>
+        </div>
+        <div class="group-score-controls">
+          <button class="btn-group-score btn-gminus" onclick="updateGroupScore(${idx}, -1)">-1 Puan</button>
+          <button class="btn-group-score btn-gplus" onclick="updateGroupScore(${idx}, 1)">+1 Puan</button>
+        </div>
+      `;
+      container.appendChild(card);
+    });
+  }
+
+  function updateGroupName(index, newName) {
+    if (activeGroupsState[index]) {
+      activeGroupsState[index].name = newName;
+    }
+  }
+
+  function updateGroupScore(index, amount) {
+    if (activeGroupsState[index]) {
+      activeGroupsState[index].score += amount;
+      renderGroupsUI();
+    }
+  }
+
+  function resetGroupScores() {
+    if (activeGroupsState.length === 0) return;
+    if (confirm("Tüm grup puanlarını sıfırlamak istediğinize emin misiniz?")) {
+      activeGroupsState.forEach(g => g.score = 0);
+      renderGroupsUI();
+    }
   }
 
   // Sayaç Fonksiyonları
@@ -1303,6 +1653,7 @@
     if (confirm("Tüm öğrencileri silmek istediğinize emin misiniz?")) {
       students = [];
       remaining = [];
+      activeGroupsState = [];
       currentSelectedStudentId = null;
       document.getElementById('evaluationButtons').style.display = 'none';
       localStorage.removeItem('saved_students');
