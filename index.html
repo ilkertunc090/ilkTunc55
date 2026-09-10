@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <link rel="manifest" href='data:application/manifest+json,{ "name": "Öğrenci Seçici", "short_name": "Öğrenci Seç", "start_url": "./", "display": "standalone", "background_color": "#ffffff", "theme_color": "#ffffff", "description": "Öğrenci Seçme ve Puanlama Uygulaması" }'>
-
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Öğrenci Seçici - Kart Çevirme Efektli</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#ffffff">
   <!-- Excel Okuma Kütüphanesi -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <!-- Konfeti Efekti Kütüphanesi -->
@@ -631,7 +631,7 @@
         <h4>Ses ve Efekt Ayarları</h4>
         <label class="toggle-option">
           <input type="checkbox" id="soundToggle" checked>
-          <span>Alkış ve Kutlama Müzik Efektini Çal</span>
+          <span>Alkış and Kutlama Müzik Efektini Çal</span>
         </label>
       </div>
 
@@ -764,18 +764,16 @@
     });
   }
 
-  // YENİ EKLENEN: Güleryüz butonuna özel tatlı ses efekti
   function playSmileSuccessSound() {
     if (!document.getElementById('soundToggle').checked) return;
     if (audioCtx.state === 'suspended') audioCtx.resume();
 
-    // Başarı/Ödül akoru (Neşeli ve yukarı doğru giden melodi)
-    const notes = [440.00, 554.37, 659.25, 880.00]; // La major akoru arpeji
+    const notes = [440.00, 554.37, 659.25, 880.00];
     notes.forEach((freq, index) => {
       const osc = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
 
-      osc.type = 'triangle'; // Daha yumuşak, kulak tırmalamayan ton
+      osc.type = 'triangle';
       osc.frequency.setValueAtTime(freq, audioCtx.currentTime + (index * 0.06));
 
       gain.gain.setValueAtTime(0.15, audioCtx.currentTime + (index * 0.06));
@@ -807,7 +805,6 @@
     }
   }
 
-  // YENİ EKLENEN: Güleryüz butonuna basıldığında tetiklenecek küçük neşeli konfeti
   function triggerSmileConfetti() {
     if (typeof confetti === 'function') {
       confetti({
@@ -1274,8 +1271,8 @@
 
     if (type === 'smile') {
       student.smileCount = (student.smileCount || 0) + 1;
-      playSmileSuccessSound(); // Güleryüz butonuna basıldığında özel neşeli ses efekti çalması sağlandı
-      triggerSmileConfetti();    // Küçük renkli ödül konfetisi patlatıldı
+      playSmileSuccessSound();
+      triggerSmileConfetti();
     }
 
     saveStudentsToStorage();
