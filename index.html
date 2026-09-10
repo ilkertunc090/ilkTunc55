@@ -542,6 +542,61 @@
     .score-negative { background-color: #fff5f5; color: #e03131; }
     .score-zero { background-color: #f1f3f5; color: #495057; }
 
+    /* SAYAÇ STİLLERİ */
+    .timer-display {
+      font-size: 52px;
+      font-weight: bold;
+      color: #2c3e50;
+      text-align: center;
+      margin: 20px 0;
+      font-family: monospace;
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 12px;
+      border: 2px solid #dee2e6;
+    }
+    .timer-presets {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 15px;
+    }
+    .btn-preset {
+      background-color: #e9ecef;
+      color: #495057;
+      border: none;
+      padding: 10px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.2s;
+    }
+    .btn-preset:hover {
+      background-color: #ced4da;
+    }
+    .timer-controls {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+    .btn-timer-action {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      color: white;
+    }
+    .btn-timer-start { background-color: #28a745; }
+    .btn-timer-start:hover { background-color: #218838; }
+    .btn-timer-pause { background-color: #ffc107; color: #212529; }
+    .btn-timer-pause:hover { background-color: #e0a800; }
+    .btn-timer-reset { background-color: #6c757d; }
+    .btn-timer-reset:hover { background-color: #5a6268; }
+
     @media (max-width: 480px) {
       .card-container {
         width: 260px;
@@ -561,6 +616,9 @@
       .top-btn span:first-child, .fullscreen-btn span:first-child {
         font-size: 16px;
       }
+      .timer-presets {
+        grid-template-columns: repeat(2, 1fr);
+      }
     }
   </style>
 </head>
@@ -576,6 +634,10 @@
       <button class="top-btn" onclick="openStudentScoreModal()">
         <span>⭐</span>
         <span>Puanlar</span>
+      </button>
+      <button class="top-btn" onclick="openTimerModal()">
+        <span>⏱️</span>
+        <span>Sayaç</span>
       </button>
     </div>
     <button class="fullscreen-btn" id="fullscreenBtn" onclick="toggleFullscreen()">
@@ -710,6 +772,31 @@
     </div>
   </div>
 
+  <!-- SÜRE ÖLÇER MODALI -->
+  <div class="settings-modal" id="timerModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Süre Ölçer / Geri Sayım</h3>
+        <button class="btn-main-screen" onclick="closeTimerModal()">Ana Ekran</button>
+      </div>
+      <div class="modal-body-content" style="text-align: center;">
+        <div class="timer-presets">
+          <button class="btn-preset" onclick="setTimerPreset(30)">30 Sn</button>
+          <button class="btn-preset" onclick="setTimerPreset(60)">1 Dakika</button>
+          <button class="btn-preset" onclick="setTimerPreset(120)">2 Dakika</button>
+          <button class="btn-preset" onclick="setTimerPreset(300)">5 Dakika</button>
+        </div>
+
+        <div class="timer-display" id="timerDisplay">01:00</div>
+
+        <div class="timer-controls">
+          <button class="btn-timer-action btn-timer-start" id="timerStartBtn" onclick="toggleTimer()">Başlat</button>
+          <button class="btn-timer-action btn-timer-reset" onclick="resetTimer()">Sıfırla</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <input type="file" id="editImageInput" accept="image/*" style="display:none;" onchange="handleEditImageSelect(event)">
 
 <script>
@@ -719,6 +806,12 @@
   let currentlyEditingStudentId = null;
   let isSelecting = false;
   let currentSelectedStudentId = null;
+
+  // Sayaç Değişkenleri
+  let timerInterval = null;
+  let totalSecondsLeft = 60;
+  let initialTimerSeconds = 60;
+  let isTimerRunning = false;
 
   const defaultBoyAvatar = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><circle cx='100' cy='100' r='100' fill='%23e3f2fd'/><circle cx='100' cy='85' r='45' fill='%23ffccbc'/><path d='M55 75 Q100 20 145 75 Q130 45 100 45 Q70 45 55 75 Z' fill='%235d4037'/><circle cx='85' cy='80' r='5' fill='%23333'/><circle cx='115' cy='80' r='5' fill='%23333'/><path d='M90 100 Q100 110 110 100' stroke='%23333' stroke-width='3' fill='none' stroke-linecap='round'/><path d='M40 160 Q100 110 160 160 Z' fill='%232196f3'/></svg>";
   const defaultGirlAvatar = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><circle cx='100' cy='100' r='100' fill='%23fce4ec'/><circle cx='100' cy='85' r='45' fill='%23ffccbc'/><path d='M55 75 Q100 20 145 75 Q130 50 100 50 Q70 50 55 75 Z' fill='%23ad1457'/><path d='M55 75 Q40 120 65 150 Q50 110 55 75 Z' fill='%23ad1457'/><path d='M145 75 Q160 120 135 150 Q150 110 145 75 Z' fill='%23ad1457'/><circle cx='85' cy='80' r='5' fill='%23333'/><circle cx='115' cy='80' r='5' fill='%23333'/><path d='M90 100 Q100 110 110 100' stroke='%23333' stroke-width='3' fill='none' stroke-linecap='round'/><path d='M40 160 Q100 110 160 160 Z' fill='%23e91e63'/></svg>";
@@ -801,6 +894,29 @@
     });
   }
 
+  function playAlarmSound() {
+    if (!document.getElementById('soundToggle').checked) return;
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+
+    const notes = [880, 659, 880, 659];
+    notes.forEach((freq, index) => {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+
+      osc.type = 'square';
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime + (index * 0.15));
+
+      gain.gain.setValueAtTime(0.2, audioCtx.currentTime + (index * 0.15));
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + (index * 0.15) + 0.12);
+
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      osc.start(audioCtx.currentTime + (index * 0.15));
+      osc.stop(audioCtx.currentTime + (index * 0.15) + 0.12);
+    });
+  }
+
   function triggerConfetti(gender) {
     if (typeof confetti === 'function') {
       let colors = ['#007bff', '#28a745', '#17a2b8', '#ffc107'];
@@ -832,6 +948,7 @@
 
   window.onload = function() {
     loadStudentsFromStorage();
+    updateTimerDisplay();
   };
 
   function openSettings() {
@@ -856,6 +973,69 @@
   }
   function closeStudentScoreModal() {
     document.getElementById('studentScoreModal').style.display = 'none';
+  }
+
+  function openTimerModal() {
+    document.getElementById('timerModal').style.display = 'flex';
+  }
+  function closeTimerModal() {
+    document.getElementById('timerModal').style.display = 'none';
+  }
+
+  // Sayaç Fonksiyonları
+  function setTimerPreset(seconds) {
+    pauseTimer();
+    initialTimerSeconds = seconds;
+    totalSecondsLeft = seconds;
+    updateTimerDisplay();
+  }
+
+  function updateTimerDisplay() {
+    const minutes = Math.floor(totalSecondsLeft / 60);
+    const seconds = totalSecondsLeft % 60;
+    const displayString = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    document.getElementById('timerDisplay').textContent = displayString;
+  }
+
+  function toggleTimer() {
+    if (isTimerRunning) {
+      pauseTimer();
+    } else {
+      startTimer();
+    }
+  }
+
+  function startTimer() {
+    if (totalSecondsLeft <= 0) return;
+    isTimerRunning = true;
+    const startBtn = document.getElementById('timerStartBtn');
+    startBtn.textContent = 'Duraklat';
+    startBtn.className = 'btn-timer-action btn-timer-pause';
+
+    timerInterval = setInterval(() => {
+      if (totalSecondsLeft > 0) {
+        totalSecondsLeft--;
+        updateTimerDisplay();
+      } else {
+        pauseTimer();
+        playAlarmSound();
+        alert("Süre bitti!");
+      }
+    }, 1000);
+  }
+
+  function pauseTimer() {
+    isTimerRunning = false;
+    clearInterval(timerInterval);
+    const startBtn = document.getElementById('timerStartBtn');
+    startBtn.textContent = 'Başlat';
+    startBtn.className = 'btn-timer-action btn-timer-start';
+  }
+
+  function resetTimer() {
+    pauseTimer();
+    totalSecondsLeft = initialTimerSeconds;
+    updateTimerDisplay();
   }
 
   function saveStudentsToStorage() {
