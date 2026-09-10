@@ -1,0 +1,9 @@
+{
+  "name": "Öğrenci Seçici",
+  "short_name": "Öğrenci Seç",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "description": "Öğrenci Seçme ve Puanlama Uygulaması"
+}
