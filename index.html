@@ -260,18 +260,29 @@
       width: 90%;
       max-width: 680px;
       max-height: 90vh;
-      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
       border-radius: 16px;
-      padding: 25px;
+      padding: 0 25px 25px 25px;
       box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      overflow: hidden;
     }
     .modal-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 15px;
+      background: white;
+      padding: 20px 0 15px 0;
+      margin-bottom: 10px;
       border-bottom: 1px solid #eee;
-      padding-bottom: 10px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .modal-body-content {
+      overflow-y: auto;
+      flex: 1;
+      padding-right: 2px;
     }
     .btn-main-screen {
       background-color: #28a745;
@@ -609,10 +620,12 @@
         <h3>Öğrenci Listesi ve Puanlama</h3>
         <button class="btn-main-screen" onclick="closeStudentListModal()">Ana Ekran</button>
       </div>
-      <div style="margin-bottom: 8px; font-size: 13px; color: #666;">
-        Buradan öğrencilerin mevcut yüz sayılarını görebilir, artırabilir, azaltabilir veya tek tıkla sıfırlayabilirsiniz:
+      <div class="modal-body-content">
+        <div style="margin-bottom: 8px; font-size: 13px; color: #666;">
+          Buradan öğrencilerin mevcut yüz sayılarını görebilir, artırabilir, azaltabilir veya tek tıkla sıfırlayabilirsiniz:
+        </div>
+        <div id="active-student-list">Henüz öğrenci eklenmedi.</div>
       </div>
-      <div id="active-student-list">Henüz öğrenci eklenmedi.</div>
     </div>
   </div>
 
@@ -624,54 +637,56 @@
         <button class="btn-main-screen" onclick="closeSettings()">Ana Ekran</button>
       </div>
 
-      <div class="section-box">
-        <h4>Ses ve Efekt Ayarları</h4>
-        <label class="toggle-option">
-          <input type="checkbox" id="soundToggle" checked>
-          <span>Alkış ve Kutlama Müzik Efektini Çal</span>
-        </label>
-      </div>
-
-      <div class="section-box">
-        <h4>Tek Öğrenci Ekle</h4>
-        <div class="single-add-form">
-          <input type="text" id="singleNameInput" placeholder="Örn: Ahmet veya Zeynep">
-          <div class="gender-select-group">
-            <span style="font-size: 13px; color: #555;">Cinsiyet:</span>
-            <label><input type="radio" name="singleGender" value="E" checked> 👦 Erkek</label>
-            <label><input type="radio" name="singleGender" value="K"> 👧 Kız</label>
-          </div>
-          <label for="singleFileInput" class="btn-single-file" id="singleFileLabel">📷 Resim Seç (İsteğe Bağlı)</label>
-          <input type="file" id="singleFileInput" accept="image/*" onchange="updateSingleFileLabel(event)">
-          <button class="btn-add-student" onclick="addSingleStudent()">Listeye Ekle</button>
+      <div class="modal-body-content">
+        <div class="section-box">
+          <h4>Ses ve Efekt Ayarları</h4>
+          <label class="toggle-option">
+            <input type="checkbox" id="soundToggle" checked>
+            <span>Alkış ve Kutlama Müzik Efektini Çal</span>
+          </label>
         </div>
-      </div>
 
-      <div class="section-box">
-        <h4>Toplu Yükleme Seçenekleri</h4>
-        <div class="upload-options">
-          <div class="upload-card">
-            <span style="font-size: 12px; font-weight: bold; color: #333;">📊 Excel / Liste Yükle</span><br>
-            <span style="font-size: 11px; color: #666;">Kızlar için ismin sonuna (K) yazın</span><br>
-            <label for="textFileInput" class="btn-card-select">Liste Seç</label>
-            <input type="file" id="textFileInput" accept=".xlsx,.xls,.txt,.csv" onchange="handleListFileSelect(event)">
-          </div>
-
-          <div class="upload-card">
-            <span style="font-size: 12px; font-weight: bold; color: #333;">📁 Resim Klasörü Yükle</span><br>
-            <span style="font-size: 11px; color: #666;">Örn: Zeynep(K).jpg</span><br>
-            <label for="folderInput" class="btn-card-select">Klasör Seç</label>
-            <input type="file" id="folderInput" webkitdirectory directory multiple accept="image/*" onchange="handleFolderSelect(event)">
+        <div class="section-box">
+          <h4>Tek Öğrenci Ekle</h4>
+          <div class="single-add-form">
+            <input type="text" id="singleNameInput" placeholder="Örn: Ahmet veya Zeynep">
+            <div class="gender-select-group">
+              <span style="font-size: 13px; color: #555;">Cinsiyet:</span>
+              <label><input type="radio" name="singleGender" value="E" checked> 👦 Erkek</label>
+              <label><input type="radio" name="singleGender" value="K"> 👧 Kız</label>
+            </div>
+            <label for="singleFileInput" class="btn-single-file" id="singleFileLabel">📷 Resim Seç (İsteğe Bağlı)</label>
+            <input type="file" id="singleFileInput" accept="image/*" onchange="updateSingleFileLabel(event)">
+            <button class="btn-add-student" onclick="addSingleStudent()">Listeye Ekle</button>
           </div>
         </div>
-      </div>
 
-      <div style="text-align: left;">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-          <label style="font-weight: bold; font-size: 14px;">Kayıtlı Öğrencileri Düzenle / Sil:</label>
-          <button class="btn-clear-all" onclick="clearAllStudents()">Tümünü Temizle</button>
+        <div class="section-box">
+          <h4>Toplu Yükleme Seçenekleri</h4>
+          <div class="upload-options">
+            <div class="upload-card">
+              <span style="font-size: 12px; font-weight: bold; color: #333;">📊 Excel / Liste Yükle</span><br>
+              <span style="font-size: 11px; color: #666;">Kızlar için ismin sonuna (K) yazın</span><br>
+              <label for="textFileInput" class="btn-card-select">Liste Seç</label>
+              <input type="file" id="textFileInput" accept=".xlsx,.xls,.txt,.csv" onchange="handleListFileSelect(event)">
+            </div>
+
+            <div class="upload-card">
+              <span style="font-size: 12px; font-weight: bold; color: #333;">📁 Resim Klasörü Yükle</span><br>
+              <span style="font-size: 11px; color: #666;">Örn: Zeynep(K).jpg</span><br>
+              <label for="folderInput" class="btn-card-select">Klasör Seç</label>
+              <input type="file" id="folderInput" webkitdirectory directory multiple accept="image/*" onchange="handleFolderSelect(event)">
+            </div>
+          </div>
         </div>
-        <div id="settings-student-list">Henüz öğrenci eklenmedi.</div>
+
+        <div style="text-align: left; padding-bottom: 10px;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <label style="font-weight: bold; font-size: 14px;">Kayıtlı Öğrencileri Düzenle / Sil:</label>
+            <button class="btn-clear-all" onclick="clearAllStudents()">Tümünü Temizle</button>
+          </div>
+          <div id="settings-student-list">Henüz öğrenci eklenmedi.</div>
+        </div>
       </div>
     </div>
   </div>
@@ -683,12 +698,14 @@
         <h3>Öğrenci Puan Pencereleri</h3>
         <button class="btn-main-screen" onclick="closeStudentScoreModal()">Ana Ekran</button>
       </div>
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-        <span style="font-size: 13px; color: #666;">Genel net puan durumları ve bireysel sıfırlama:</span>
-        <button class="btn-clear-all" onclick="resetAllScores()">Tüm Puanları Sıfırla</button>
-      </div>
-      <div id="score-student-list" style="max-height: 320px; overflow-y: auto; border: 1px solid #eee; border-radius: 6px; padding: 5px; background: #fff;">
-        Henüz öğrenci eklenmedi.
+      <div class="modal-body-content">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+          <span style="font-size: 13px; color: #666;">Genel net puan durumları ve bireysel sıfırlama:</span>
+          <button class="btn-clear-all" onclick="resetAllScores()">Tüm Puanları Sıfırla</button>
+        </div>
+        <div id="score-student-list" style="max-height: 320px; overflow-y: auto; border: 1px solid #eee; border-radius: 6px; padding: 5px; background: #fff;">
+          Henüz öğrenci eklenmedi.
+        </div>
       </div>
     </div>
   </div>
