@@ -26,7 +26,7 @@
       position: relative;
     }
 
-    /* ÜST BUTONLAR GENEL KONTEYNERİ (Çakışmayı önlemek için düzenlendi) */
+    /* ÜST BUTONLAR GENEL KONTEYNERİ */
     .top-buttons-container {
       position: fixed;
       top: max(15px, env(safe-area-inset-top));
@@ -36,31 +36,37 @@
       justify-content: space-between;
       align-items: center;
       z-index: 100;
-      pointer-events: none; /* Boşlukların tıklanmasını engellemesin */
+      pointer-events: none;
     }
 
     .top-left-buttons {
       display: flex;
-      gap: 6px;
+      gap: 8px;
       pointer-events: auto;
     }
 
+    /* İKONLAR VE BUTONLAR BÜYÜTÜLDÜ */
     .top-btn, .fullscreen-btn {
       background-color: #ffffff;
       color: #333;
       border: 1px solid #ccc;
-      border-radius: 30px;
-      padding: 8px 12px;
-      font-size: 13px;
+      border-radius: 35px;
+      padding: 10px 16px;
+      font-size: 15px;
       font-weight: bold;
       cursor: pointer;
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 6px;
       transition: all 0.2s ease;
       pointer-events: auto;
       white-space: nowrap;
+    }
+
+    /* İkon Boyutu Büyütüldü */
+    .top-btn span:first-child, .fullscreen-btn span:first-child {
+      font-size: 18px;
     }
 
     .top-btn:hover, .fullscreen-btn:hover {
@@ -80,7 +86,7 @@
       z-index: 10;
     }
 
-    /* 3D KART ALANI & ÇEVİRME EFEKTİ (BÜYÜTÜLDÜ) */
+    /* 3D KART ALANI & ÇEVİRME EFEKTİ */
     .card-container {
       width: 320px;
       height: 380px;
@@ -138,7 +144,6 @@
       transform: rotateY(180deg);
     }
 
-    /* RESİM BOYUTU BÜYÜTÜLDÜ */
     #student-image {
       width: 210px;
       height: 210px;
@@ -158,7 +163,7 @@
       word-break: break-word;
     }
 
-    /* DEĞERLENDİRME BUTONU (KARTIN ALTINDA) */
+    /* DEĞERLENDİRME BUTONU */
     .evaluation-buttons {
       display: none;
       gap: 15px;
@@ -483,7 +488,6 @@
     .btn-minus-red { background-color: #ff8787; }
     .mini-btn:hover { opacity: 0.85; transform: scale(1.08); }
 
-    /* TEKLİ SIFIRLAMA BUTONU */
     .btn-single-reset {
       background-color: #adb5bd;
       color: white;
@@ -501,7 +505,6 @@
       background-color: #6c757d;
     }
 
-    /* PUANLAR MODALI STİLLERİ */
     .score-row {
       display: flex;
       justify-content: space-between;
@@ -540,17 +543,19 @@
       .upload-options {
         grid-template-columns: 1fr;
       }
-      /* Çok küçük ekranlarda buton yazı boyutları ve boşlukları optimize edildi */
       .top-btn, .fullscreen-btn {
-        padding: 6px 8px;
-        font-size: 11px;
+        padding: 8px 12px;
+        font-size: 13px;
+      }
+      .top-btn span:first-child, .fullscreen-btn span:first-child {
+        font-size: 16px;
       }
     }
   </style>
 </head>
 <body>
 
-  <!-- ÜST BUTONLAR KONTEYNERİ (Sol ve Sağ butonları otomatik düzenler) -->
+  <!-- ÜST BUTONLAR KONTEYNERİ -->
   <div class="top-buttons-container">
     <div class="top-left-buttons">
       <button class="top-btn" onclick="openStudentListModal()">
@@ -1161,21 +1166,18 @@
           <strong>${student.name}</strong> <span>(${genderText})</span>
         </div>
         <div class="score-group">
-          <!-- Güleryüz Alanı -->
           <div class="score-box">
             <span>😊</span>
             <span>${smile}</span>
             <button class="mini-btn btn-plus-green" onclick="updateStudentScore(${student.id}, 'smile', 1)">+</button>
             <button class="mini-btn btn-minus-green" onclick="updateStudentScore(${student.id}, 'smile', -1)">-</button>
           </div>
-          <!-- Üzgün Yüz Alanı -->
           <div class="score-box">
             <span>😢</span>
             <span>${sad}</span>
             <button class="mini-btn btn-plus-red" onclick="updateStudentScore(${student.id}, 'sad', 1)">+</button>
             <button class="mini-btn btn-minus-red" onclick="updateStudentScore(${student.id}, 'sad', -1)">-</button>
           </div>
-          <!-- Tekli Sıfırlama Butonu -->
           <button class="btn-single-reset" onclick="resetSingleStudentScore(${student.id})" title="Bu Öğrencinin Puanlarını Sıfırla">↺ Sıfırla</button>
         </div>
       `;
